@@ -1,0 +1,57 @@
+---
+
+- name: Download package
+  get_url:
+    url: "https://packages.graylog2.org/repo/packages/graylog-collector-latest-repository-ubuntu14.04_latest.deb"
+    dest: "/tmp/graylog-collector.deb"
+
+- name: Install package
+  apt:
+    deb: "/tmp/graylog-collector.deb"
+  register: repoinstalled
+
+- name: Update repository
+  apt:
+    update_cache: yes
+  when: repoinstalled.changed
+
+- name: Install apt-transport-https
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_valid_time | default(3600) }}"
+
+- name: Install graylog-collector
+  apt:
+    name: graylog-collector
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_valid_time | default(3600) }}"
+    state: present
+
+- name: Install systemd service file
+  copy:
+    src: systemd.service
+    dest: /lib/systemd/system/graylog-collector.service
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version | version_compare('16.04', '>=')
+  register: graylogserviceinstalled
+
+- name: Enable systemd service
+  shell: "systemctl enable graylog-collector.service"
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version | version_compare('16.04', '>=') and graylogserviceinstalled.changed
+
+- name: Configure log directory permissions
+  file:
+    path: /var/log
+    state: directory
+    mode: "g+rX,o+rX"
+    recurse: true
+
+- name: Configure Graylog collector
+  template:
+    src: collector.conf.j2
+    dest: /etc/graylog/collector/collector.conf
+  notify: restart graylog-collector

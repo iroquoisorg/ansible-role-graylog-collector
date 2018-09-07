@@ -1,0 +1,8 @@
+graylog_server_url: "http://localhost:12900/"
+
+graylog_collector_inputs: 
+    - {id: "syslog", type: "file", path: "/var/log/syslog"}
+    
+graylog_collector_outputs: 
+    - {id: "gelf-tcp", type: "gelf", host: "localhost", port: 12201}
+    

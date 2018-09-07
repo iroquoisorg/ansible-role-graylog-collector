@@ -1,0 +1,6 @@
+---
+# handlers file for postgresql
+- name: restart graylog-collector
+  service:
+    name: graylog-collector
+    state: restarted
