@@ -1,6 +1,6 @@
 # graylog-collector
 
-[![Build Status](https://travis-ci.com/iroquoisorg/ansible-role-graylog-collector.svg?branch=master)](https://travis-ci.com/iroquoisorg/ansible-role-memcached)
+[![Build Status](https://travis-ci.com/iroquoisorg/ansible-role-graylog-collector.svg?branch=master)](https://travis-ci.com/iroquoisorg/ansible-role-graylog-collector)
 
 Ansible role for graylog-collector
 
@@ -23,3 +23,7 @@ graylog_collector_outputs:
     
 
 ```
+
+# Development
+
+Please check [development guide](DEVELOPMENT.md) for details about developing and testing this role.
